@@ -45,7 +45,7 @@ function mapped_graph(r::WeightedGadget)
 end
 _mul_weight(node::UnWeightedNode, factor) = Node(node..., factor)
 
-for (T, centerloc) in [(:Turn, (2, 3)), (:Branch, (2, 3)), (:BranchFix, (3, 2)), (:BranchFixB, (3, 2)), (:WTurn, (3, 3)), (:EndTurn, (1, 2))]
+for (T, centerloc) in [(:Turn, (2, 3)), (:Branch, (2, 3)), (:BranchFix, (3, 2)), (:BranchFixB, (3, 2)), (:WTurn, (3, 3)), (:EndTurn, (1, 2)), (:EndTurnD, (4, 3))]
     @eval source_centers(::WeightedGadget{<:$T}) = [cross_location($T()) .+ (0, 1)]
     @eval mapped_centers(::WeightedGadget{<:$T}) = [$centerloc]
 end
@@ -121,12 +121,12 @@ function _map_configs_back(r::MappingResult{<:WeightedNode}, configs::AbstractVe
     return res
 end
 
-# simple rules for crossing gadgets
+# simple rules for crossing gadgets   A VERIFIER POUR EndTurnD
 for (GT, s1, m1, s3, m3) in [(:(Cross{true}), [], [], [], []), (:(Cross{false}), [], [], [], []),
         (:(WTurn), [], [], [], []), (:(BranchFix), [], [], [], []), (:(Turn), [], [], [], []),
         (:(TrivialTurn), [1, 2], [1, 2], [], []), (:(BranchFixB), [1], [1], [], []),
-        (:(EndTurn), [3], [1], [], []), (:(TCon), [2], [2], [], []),
-        (:(Branch), [], [], [4], [2]),
+        (:(EndTurn), [3], [1], [], []), (:(EndTurnD), [3], [1], [], []),
+        (:(TCon), [2], [2], [], []), (:(Branch), [], [], [4], [2]),
         ]
     @eval function weighted(g::$GT)
         slocs, sg, spins = source_graph(g)
